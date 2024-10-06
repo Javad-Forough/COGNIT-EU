@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import torch.utils.data as data
 import matplotlib.pyplot as plt
@@ -41,27 +42,70 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 print("Model training started.....")
 train_model(model, train_loader, criterion, optimizer, num_epochs)
 
+# Save the model
+model_save_path = 'lstm_model.pth'
+torch.save(model.state_dict(), model_save_path)
+print(f'Model saved to {model_save_path}')
+
+# # Create a new instance of the model
+# model = LSTMModel(input_size, hidden_size, num_layers, output_size)
+
+# # Load the model's state dictionary
+# model.load_state_dict(torch.load('lstm_model.pth'))
+
 # After training, predict the next 4 time steps for a test sequence
 print("Model evaluation started.....")
+# Split data into training and testing sets
+train_size = int(len(data_scaled) * 0.8)
+train_data, test_data = data_scaled[:train_size], data_scaled[train_size:]
+
+# Create sequences from the test data
+def create_test_sequences(data, seq_length):
+    test_sequences = []
+    for i in range(len(data) - seq_length + 1):
+        test_sequences.append(data[i:i + seq_length])
+    return np.array(test_sequences)
+
+# Create test sequences
+test_sequences = create_test_sequences(test_data, sequence_length)
+
+# Convert to PyTorch tensors
+test_sequences_tensor = torch.from_numpy(test_sequences).float()
+
+# Evaluate the model
 model.eval()
-test_seq = X_tensor[-1].unsqueeze(0)  # Take the last sequence in the dataset for testing
-predicted_seq = model(test_seq).detach().numpy()
-predicted_seq = scaler.inverse_transform(predicted_seq)
+predictions = []
+ground_truth = []
 
-# Visualize CPU predictions (feature 0) against ground truth
-plt.figure(figsize=(10, 6))
+# Use a sliding window to generate predictions
+for i in range(len(test_sequences_tensor)):
+    with torch.no_grad():
+        seq = test_sequences_tensor[i].unsqueeze(0)  # Add batch dimension
+        pred = model(seq).detach().numpy()
+        predictions.append(pred[0])  # Append predicted values
+        # Ground truth is the next 4 time steps after the sequence
+        if i + prediction_length <= len(test_data):
+            gt = test_data[i + sequence_length:i + sequence_length + prediction_length]
+            ground_truth.append(gt)
 
-# Plot ground truth (last sequence used for testing, CPU is feature 0) in blue
-plt.plot(range(sequence_length), scaler.inverse_transform(X_tensor[-1])[:, 0], label='CPU (Ground Truth)', color='blue')
+# Convert to numpy arrays for easier indexing
+predictions = np.array(predictions)
+ground_truth = np.array(ground_truth)
 
-# Plot predicted CPU usage for the next 4 time steps in orange
-plt.plot(range(sequence_length, sequence_length + prediction_length), predicted_seq[0, :], label='CPU (Predicted)', linestyle='--', color='orange')
+# Visualize CPU predictions (feature 0) against ground truth for the entire test set
+plt.figure(figsize=(12, 6))
 
-# Add legend and labels
-plt.legend()
-plt.title('CPU Prediction vs Ground Truth')
+# Plot ground truth for all instances (CPU is feature 0)
+for i in range(len(ground_truth)):
+    plt.plot(range(i * prediction_length, (i + 1) * prediction_length), scaler.inverse_transform(ground_truth[i])[:, 0], color='blue', alpha=0.3)
+
+# Plot predicted CPU usage for the next 4 time steps
+for i in range(len(predictions)):
+    plt.plot(range(i * prediction_length, (i + 1) * prediction_length), scaler.inverse_transform(predictions[i].reshape(1, -1))[:, 0], linestyle='--', color='orange', alpha=0.3)
+
+plt.title('CPU Predictions vs Ground Truth for Test Set')
 plt.xlabel('Time Steps')
 plt.ylabel('CPU Usage')
-plt.grid()  # Optional: add a grid for better readability
+plt.grid()
+plt.legend(['CPU (Ground Truth)', 'CPU (Predicted)'])
 plt.show()
-
