@@ -16,6 +16,7 @@ learning_rate = 0.001
 num_epochs = 2
 
 # Load and preprocess data
+print("Data preparation started.....")
 filename = 'workload_series.npy'
 data_reshaped = load_data(filename)
 data_scaled, scaler = scale_data(data_reshaped)
@@ -29,15 +30,19 @@ y_tensor = torch.from_numpy(y).float()
 train_dataset = data.TensorDataset(X_tensor, y_tensor)
 train_loader = data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
 
+
 # Initialize the LSTM model
+print("Model initialization started.....")
 model = LSTMModel(input_size, hidden_size, num_layers, output_size)
 criterion = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 # Train the model
+print("Model training started.....")
 train_model(model, train_loader, criterion, optimizer, num_epochs)
 
 # After training, predict the next 4 time steps for a test sequence
+print("Model evaluation started.....")
 model.eval()
 test_seq = X_tensor[-1].unsqueeze(0)  # Take the last sequence in the dataset for testing
 predicted_seq = model(test_seq).detach().numpy()
@@ -45,12 +50,18 @@ predicted_seq = scaler.inverse_transform(predicted_seq)
 
 # Visualize CPU predictions (feature 0) against ground truth
 plt.figure(figsize=(10, 6))
-# Plot ground truth (last sequence used for testing, CPU is feature 0)
-plt.plot(range(sequence_length), scaler.inverse_transform(X_tensor[-1])[:, 0], label='CPU (Ground Truth)')
-# Plot predicted CPU usage for the next 4 time steps
-plt.plot(range(sequence_length, sequence_length + prediction_length), predicted_seq[:, 0], label='CPU (Predicted)', linestyle='--')
+
+# Plot ground truth (last sequence used for testing, CPU is feature 0) in blue
+plt.plot(range(sequence_length), scaler.inverse_transform(X_tensor[-1])[:, 0], label='CPU (Ground Truth)', color='blue')
+
+# Plot predicted CPU usage for the next 4 time steps in orange
+plt.plot(range(sequence_length, sequence_length + prediction_length), predicted_seq[0, :], label='CPU (Predicted)', linestyle='--', color='orange')
+
+# Add legend and labels
 plt.legend()
 plt.title('CPU Prediction vs Ground Truth')
 plt.xlabel('Time Steps')
 plt.ylabel('CPU Usage')
+plt.grid()  # Optional: add a grid for better readability
 plt.show()
+
