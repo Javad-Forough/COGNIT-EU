@@ -16,11 +16,21 @@ def load_data(filename):
     # Optionally, reduce the size for memory constraints
     data_reshaped = data_reshaped[:len(data_reshaped) // 50]  # Use 1/4 of the dataset
 
+
+
     # Convert data to float32 for memory efficiency
     data_reshaped = data_reshaped.astype(np.float32)
     
     return data_reshaped
 
+
+def rolling_window(a, window):
+    b = []
+    for i in range(len(a)-window+1):
+        b.append([])
+        for j in range(window):
+            b[-1].append(a[j+i])
+    return b
 def scale_data(data):
     """
     Scale the data to the range [0, 1].
