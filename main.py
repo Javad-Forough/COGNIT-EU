@@ -7,6 +7,9 @@ from myLSTM import LSTMModel, train_lstm_model  # Import LSTM
 from myFFNN import FFNNModel, train_ffnn_model  # Import FFNN
 import random
 
+from rmse import calculate_rmse
+
+
 # Hyperparameters
 model_type = 'FFNN'  # Change this to 'LSTM' to switch to LSTM
 input_size = 4  
@@ -114,6 +117,9 @@ colors = ['blue', 'green', 'red', 'purple']
 # Line width for thicker lines
 line_width = 2.5
 
+# Store RMSE values for each feature
+rmse_values = []
+
 # Iterate over all 4 metrics (features) and create separate plots
 for i, metric_name in enumerate(metric_names):
     plt.figure(figsize=(12, 6))
@@ -137,3 +143,13 @@ for i, metric_name in enumerate(metric_names):
     
     # Show the plot
     plt.show()
+
+    # Calculate RMSE for the current feature
+    rmse = calculate_rmse(predictions_rescaled[:, i], ground_truth_rescaled[:, i])
+    rmse_values.append(rmse)
+    print(f'RMSE for {metric_name}: {rmse:.4f}')
+
+
+# Print overall RMSE values for each feature
+for i, metric_name in enumerate(metric_names):
+    print(f'Final RMSE for {metric_name}: {rmse_values[i]:.4f}')
