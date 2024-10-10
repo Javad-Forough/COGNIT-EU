@@ -76,8 +76,8 @@ The following plots show the comparison between the predicted and actual values 
 
 ### **1. Clone the Repository**
 ```bash
-git clone https://github.com/your-username/your-repository-name.git
-cd your-repository-name
+git clone https://github.com/Javad-Forough/COGNIT-EU.git
+cd COGNIT-EU
 ```
 
 ### **2. Install Required Libraries**
