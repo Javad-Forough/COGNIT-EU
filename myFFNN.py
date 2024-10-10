@@ -1,18 +1,20 @@
 import torch
 import torch.nn as nn
 
-# Define the Feed-Forward Neural Network (FFNN) model
 class FFNNModel(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(FFNNModel, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)  # First fully connected layer
         self.relu = nn.ReLU()  # Activation function
-        self.fc2 = nn.Linear(hidden_size, output_size)  # Output layer
+        self.fc2 = nn.Linear(hidden_size, hidden_size)  # Second hidden layer
+        self.fc3 = nn.Linear(hidden_size, output_size)  # Output layer
 
     def forward(self, x):
         out = self.fc1(x)
         out = self.relu(out)
-        out = self.fc2(out)
+        out = self.fc2(out)  # Pass through second hidden layer
+        out = self.relu(out)  # Activation after second hidden layer
+        out = self.fc3(out)  # Output layer
         return out
 
 # Train function for FFNN
@@ -25,7 +27,7 @@ def train_ffnn_model(model, train_loader, criterion, optimizer, num_epochs):
 
             # Forward pass
             outputs = model(inputs)
-            loss = criterion(outputs, targets[:, -1, :])
+            loss = criterion(outputs, targets[:, -1, :])  # Get the last time step for targets
 
             # Backward pass and optimization
             optimizer.zero_grad()

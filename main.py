@@ -11,7 +11,7 @@ from rmse import calculate_rmse
 
 
 # Hyperparameters
-model_type = 'FFNN'  # Change this to 'LSTM' to switch to LSTM
+model_type = 'LSTM'  # Change this to 'LSTM' to switch to LSTM
 input_size = 4  
 hidden_size = 64
 num_layers = 2  # Only used for LSTM
@@ -48,19 +48,26 @@ train_loader = data.DataLoader(dataset=train_dataset, batch_size=batch_size, shu
 
 # Model selection and initialization
 if model_type == 'LSTM':
-    print("Initializing LSTM model...")
+    # print("Initializing LSTM model...")
+    # model = LSTMModel(input_size, hidden_size, num_layers, output_size)
+    # criterion = torch.nn.MSELoss()
+    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    # # Train the LSTM model
+    # print("Training LSTM model...")
+    # train_lstm_model(model, train_loader, criterion, optimizer, num_epochs)
+
+    # # Save the LSTM model
+    # model_save_path = 'lstm_model.pth'
+    # torch.save(model.state_dict(), model_save_path)
+    # print(f'Model saved to {model_save_path}')
+
+
+    # Create a new instance of the model
     model = LSTMModel(input_size, hidden_size, num_layers, output_size)
-    criterion = torch.nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-    # Train the LSTM model
-    print("Training LSTM model...")
-    train_lstm_model(model, train_loader, criterion, optimizer, num_epochs)
-
-    # Save the LSTM model
-    model_save_path = 'lstm_model.pth'
-    torch.save(model.state_dict(), model_save_path)
-    print(f'Model saved to {model_save_path}')
+    # Load the model's state dictionary
+    model.load_state_dict(torch.load('lstm_model.pth'))
 
 elif model_type == 'FFNN':
     print("Initializing FFNN model...")
@@ -78,8 +85,19 @@ elif model_type == 'FFNN':
     print(f'Model saved to {model_save_path}')
 
 
-# # Load the model's state dictionary
-# model.load_state_dict(torch.load(model_save_path))
+    # # Create a new instance of the FFNN model
+    # ffnn_model = FFNNModel(input_size, hidden_size, output_size)
+
+    # # Load the FFNN model's state dictionary
+    # ffnn_model.load_state_dict(torch.load('ffnn_model.pth'))
+
+
+
+
+
+
+
+
 
 # Model evaluation starts here (same as before for both models)
 # Randomly select 100 indices from the test set
