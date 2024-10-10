@@ -65,10 +65,10 @@ The following plots show the comparison between the predicted and actual values 
 ![FFNN Memory Predictions](ffnn_Memory_predictions_vs_ground_truth.png)
 
 #### LSTM - CPU Predictions vs Ground Truth
-![LSTM CPU Predictions](LSTM_CPU_predictions_vs_ground_truth.png)
+![LSTM CPU Predictions](lstm_CPU_predictions_vs_ground_truth.png)
 
 #### LSTM - Memory Predictions vs Ground Truth
-![LSTM Memory Predictions](LSTM_Memory_predictions_vs_ground_truth.png)
+![LSTM Memory Predictions](lstm_Memory_predictions_vs_ground_truth.png)
 
 ---
 
