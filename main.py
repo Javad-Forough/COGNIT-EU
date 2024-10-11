@@ -68,6 +68,20 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
 
     # Model selection and initialization
     if model_type == 'LSTM':
+        # print("Initializing LSTM model...")
+        # model = LSTMModel(input_size, hidden_size, num_layers, output_size)
+        # criterion = torch.nn.MSELoss()
+        # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+        # # Train the LSTM model
+        # print("Training LSTM model...")
+        # train_lstm_model(model, train_loader, criterion, optimizer, num_epochs)
+
+        # # Save the LSTM model
+        # model_save_path = 'lstm_model.pth'
+        # torch.save(model.state_dict(), model_save_path)
+        # print(f'Model saved to {model_save_path}')
+
         # Create a new instance of the model
         model = LSTMModel(input_size, hidden_size, num_layers, output_size)
 
@@ -75,6 +89,7 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
         model.load_state_dict(torch.load('lstm_model.pth'))
 
     elif model_type == 'FFNN':
+        print("Initializing FFNN model...")
         print("Initializing FFNN model...")
         model = FFNNModel(input_size * sequence_length, hidden_size, output_size)  # Input size adjusted for FFNN
         criterion = torch.nn.MSELoss()
@@ -89,10 +104,13 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
         torch.save(model.state_dict(), model_save_path)
         print(f'Model saved to {model_save_path}')
 
-        # Log the trained FFNN model to MLflow
-        mlflow.pytorch.log_model(model, "model")
 
-    # Model evaluation starts here
+        # # Create a new instance of the FFNN model
+        # ffnn_model = FFNNModel(input_size, hidden_size, output_size)
+
+        # # Load the FFNN model's state dictionary
+        # ffnn_model.load_state_dict(torch.load('ffnn_model.pth'))
+        # Model evaluation starts here
     model.eval()
     X_test_tensor = torch.from_numpy(X_test).float()
     random_indices = random.sample(range(len(X_test_tensor)), 100)
