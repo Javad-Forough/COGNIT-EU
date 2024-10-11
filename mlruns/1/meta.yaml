@@ -1,0 +1,4 @@
+artifact_location: file:///home/jforough/Desktop/Cognit%20-%20Javad/COGNIT-EU/mlruns/1
+experiment_id: '1'
+lifecycle_stage: active
+name: ML Model Comparison
