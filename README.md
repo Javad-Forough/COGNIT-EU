@@ -59,16 +59,16 @@ We evaluated the models using **Root Mean Squared Error (RMSE)** to compare thei
 The following plots show the comparison between the predicted and actual values for both LSTM and FFNN models for two selected metrics: **CPU Usage** and **Memory Usage**.
 
 #### FFNN - CPU Predictions vs Ground Truth
-![FFNN CPU Predictions](ffnn_CPU_predictions_vs_ground_truth.png)
+![FFNN CPU Predictions](Images/ffnn_CPU_predictions_vs_ground_truth.png)
 
 #### FFNN - Memory Predictions vs Ground Truth
-![FFNN Memory Predictions](ffnn_Memory_predictions_vs_ground_truth.png)
+![FFNN Memory Predictions](Images/ffnn_Memory_predictions_vs_ground_truth.png)
 
 #### LSTM - CPU Predictions vs Ground Truth
-![LSTM CPU Predictions](lstm_CPU_predictions_vs_ground_truth.png)
+![LSTM CPU Predictions](Images/lstm_CPU_predictions_vs_ground_truth.png)
 
 #### LSTM - Memory Predictions vs Ground Truth
-![LSTM Memory Predictions](lstm_Memory_predictions_vs_ground_truth.png)
+![LSTM Memory Predictions](Images/lstm_Memory_predictions_vs_ground_truth.png)
 
 ---
 

@@ -1,6 +1,6 @@
 import mlflow
 import mlflow.pytorch
-
+import os
 import numpy as np
 import torch
 import torch.utils.data as data
@@ -141,6 +141,11 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
     # Store RMSE values for each feature
     rmse_values = []
 
+    images_dir = 'Images'
+
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+
     # Iterate over all 4 metrics (features) and create separate plots
     for i, metric_name in enumerate(metric_names):
         plt.figure(figsize=(12, 6))
@@ -160,7 +165,7 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
         plt.legend([f'{metric_name} (Ground Truth)', f'{metric_name} (Predicted)'])
         
         # Save each plot as a separate file
-        plot_file = f'{model_type.lower()}_{metric_name}_predictions_vs_ground_truth.png'
+        plot_file = os.path.join(images_dir, f'{model_type.lower()}_{metric_name}_predictions_vs_ground_truth.png')
         plt.savefig(plot_file)
         
         # Log the plot to MLflow
