@@ -30,7 +30,7 @@ sequence_length = 99
 prediction_length = 1
 batch_size = 64
 learning_rate = 0.001
-num_epochs = 10
+num_epochs = 1
 train_test_ratio = 0.8
 tcn_channels = [64, 64, 64]  # Channels for TCN layers
 
