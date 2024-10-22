@@ -8,13 +8,16 @@ import matplotlib.pyplot as plt
 from data import load_data, scale_data, create_sequences
 from myLSTM import LSTMModel, train_lstm_model  # Import LSTM
 from myFFNN import FFNNModel, train_ffnn_model  # Import FFNN
+from myTCN import TCN  # Import TCN
 import random
 
 from rmse import calculate_rmse
 
 
+
+
 # Hyperparameters
-model_type = 'LSTM'  # Change this to 'FFNN' to switch to FFNN
+model_type = 'FFNN'  # Change this to 'LSTM', 'FFNN', or 'TCN'
 input_size = 4  
 hidden_size = 64
 num_layers = 2  # Only used for LSTM
@@ -25,7 +28,7 @@ batch_size = 64
 learning_rate = 0.001
 num_epochs = 10
 train_test_ratio = 0.8
-
+tcn_channels = [64, 64, 64]  # Channels for TCN layers
 
 # Start MLflow experiment
 mlflow.set_experiment("ML Model Comparison")
@@ -111,6 +114,10 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
         # # Load the FFNN model's state dictionary
         # ffnn_model.load_state_dict(torch.load('ffnn_model.pth'))
         # Model evaluation starts here
+   
+
+
+
     model.eval()
     X_test_tensor = torch.from_numpy(X_test).float()
     random_indices = random.sample(range(len(X_test_tensor)), 100)
