@@ -5,10 +5,14 @@ import numpy as np
 import torch
 import torch.utils.data as data
 import matplotlib.pyplot as plt
+
 from data import load_data, scale_data, create_sequences
+
 from myLSTM import LSTMModel, train_lstm_model  # Import LSTM
 from myFFNN import FFNNModel, train_ffnn_model  # Import FFNN
 from myTCN import TCN  # Import TCN
+from myGRU import GRUModel, train_gru_model  # Import GRU
+
 import random
 
 from rmse import calculate_rmse
@@ -17,7 +21,7 @@ from rmse import calculate_rmse
 
 
 # Hyperparameters
-model_type = 'FFNN'  # Change this to 'LSTM', 'FFNN', or 'TCN'
+model_type = 'GRU'  # Change this to 'LSTM', 'FFNN', or 'TCN'
 input_size = 4  
 hidden_size = 64
 num_layers = 2  # Only used for LSTM
@@ -115,6 +119,24 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
         # ffnn_model.load_state_dict(torch.load('ffnn_model.pth'))
         # Model evaluation starts here
    
+    elif model_type == 'GRU':
+        print("Initializing GRU model...")
+        model = GRUModel(input_size, hidden_size, num_layers, output_size)
+        criterion = torch.nn.MSELoss()
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+        print("Training GRU model...")
+        train_gru_model(model, train_loader, criterion, optimizer, num_epochs)
+
+        # Save the GRU model
+        model_save_path = 'gru_model.pth'
+        torch.save(model.state_dict(), model_save_path)
+        print(f'Model saved to {model_save_path}')
+
+
+        # print("Initializing GRU model...")
+        # model = GRUModel(input_size, hidden_size, num_layers, output_size)
+        # model.load_state_dict(torch.load('gru_model.pth'))
 
 
 
