@@ -14,8 +14,10 @@ from myTCN import TCN  # Import TCN
 from myGRU import GRUModel, train_gru_model  # Import GRU
 
 import random
+import argparse # Import argparse for command line arguments
 
 from rmse import calculate_rmse
+
 
 
 
@@ -73,6 +75,12 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
     mlflow.log_param("learning_rate", learning_rate)
     mlflow.log_param("num_epochs", num_epochs)
 
+
+    # Ensure the 'models' directory exists
+    models_dir = 'models'
+    if not os.path.exists(models_dir):
+        os.makedirs(models_dir)
+
     # Model selection and initialization
     if model_type == 'LSTM':
         # print("Initializing LSTM model...")
@@ -85,58 +93,63 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
         # train_lstm_model(model, train_loader, criterion, optimizer, num_epochs)
 
         # # Save the LSTM model
-        # model_save_path = 'lstm_model.pth'
+        # model_save_path = os.path.join(models_dir, 'lstm_model.pth')
         # torch.save(model.state_dict(), model_save_path)
         # print(f'Model saved to {model_save_path}')
 
         # Create a new instance of the model
         model = LSTMModel(input_size, hidden_size, num_layers, output_size)
-
-        # Load the model's state dictionary (comment out the below lines if you wish to train instead of loading)
-        model.load_state_dict(torch.load('lstm_model.pth'))
+        
+        model_load_path = os.path.join(models_dir, 'lstm_model.pth')
+        model.load_state_dict(torch.load(model_load_path))
+        print(f'Model loaded from {model_load_path}')
 
     elif model_type == 'FFNN':
+        # print("Initializing FFNN model...")
+        # model = FFNNModel(input_size * sequence_length, hidden_size, output_size)  # Input size adjusted for FFNN
+        # criterion = torch.nn.MSELoss()
+        # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+        # # Train the FFNN model
+        # print("Training FFNN model...")
+        # train_ffnn_model(model, train_loader, criterion, optimizer, num_epochs)
+
+        # # Save the FFNN model
+        # model_save_path = os.path.join(models_dir, 'ffnn_model.pth')
+        # torch.save(model.state_dict(), model_save_path)
+        # print(f'Model saved to {model_save_path}')
+
+
+        # Create a new instance of the FFNN model
         print("Initializing FFNN model...")
-        print("Initializing FFNN model...")
-        model = FFNNModel(input_size * sequence_length, hidden_size, output_size)  # Input size adjusted for FFNN
-        criterion = torch.nn.MSELoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+        model = FFNNModel(input_size* sequence_length, hidden_size, output_size)
 
-        # Train the FFNN model
-        print("Training FFNN model...")
-        train_ffnn_model(model, train_loader, criterion, optimizer, num_epochs)
-
-        # Save the FFNN model
-        model_save_path = 'ffnn_model.pth'
-        torch.save(model.state_dict(), model_save_path)
-        print(f'Model saved to {model_save_path}')
-
-
-        # # Create a new instance of the FFNN model
-        # ffnn_model = FFNNModel(input_size, hidden_size, output_size)
-
-        # # Load the FFNN model's state dictionary
-        # ffnn_model.load_state_dict(torch.load('ffnn_model.pth'))
-        # Model evaluation starts here
+        # Load the FFNN model's state dictionary
+        model_load_path = os.path.join(models_dir, 'ffnn_model.pth')
+        model.load_state_dict(torch.load(model_load_path))
+        print(f'Model loaded from {model_load_path}')
    
     elif model_type == 'GRU':
-        print("Initializing GRU model...")
-        model = GRUModel(input_size, hidden_size, num_layers, output_size)
-        criterion = torch.nn.MSELoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-
-        print("Training GRU model...")
-        train_gru_model(model, train_loader, criterion, optimizer, num_epochs)
-
-        # Save the GRU model
-        model_save_path = 'gru_model.pth'
-        torch.save(model.state_dict(), model_save_path)
-        print(f'Model saved to {model_save_path}')
-
-
         # print("Initializing GRU model...")
         # model = GRUModel(input_size, hidden_size, num_layers, output_size)
-        # model.load_state_dict(torch.load('gru_model.pth'))
+        # criterion = torch.nn.MSELoss()
+        # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+        # print("Training GRU model...")
+        # train_gru_model(model, train_loader, criterion, optimizer, num_epochs)
+
+        # # Save the GRU model
+        # model_save_path = os.path.join(models_dir, 'gru_model.pth')
+        # torch.save(model.state_dict(), model_save_path)
+        # print(f'Model saved to {model_save_path}')
+
+
+        print("Initializing GRU model...")
+        model = GRUModel(input_size, hidden_size, num_layers, output_size)
+        
+        model_load_path = os.path.join(models_dir, 'gru_model.pth')
+        model.load_state_dict(torch.load(model_load_path))
+        print(f'Model loaded from {model_load_path}')
 
 
 
