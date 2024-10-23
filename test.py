@@ -4,7 +4,6 @@ import numpy as np
 import torch
 import torch.utils.data as data
 import matplotlib.pyplot as plt
-from data import load_data, scale_data, create_sequences
 from myLSTM import LSTMModel
 from myFFNN import FFNNModel
 from myGRU import GRUModel
@@ -46,15 +45,14 @@ def main(model_type):
     sequence_length = 99
     batch_size = 64
 
-    # Load and preprocess data
-    filename = 'workload_series.npy'
-    data_reshaped = load_data(filename)
-    data_scaled, scaler = scale_data(data_reshaped)
-    X, y = create_sequences(data_scaled, sequence_length, 1)
+    # Load the test set from .npy files
+    save_dir = 'TestSet'
+    X_test = np.load(os.path.join(save_dir, 'X_test.npy'))
+    y_test = np.load(os.path.join(save_dir, 'y_test.npy'))
 
     # Convert to PyTorch tensors
-    X_tensor = torch.from_numpy(X).float()
-    y_tensor = torch.from_numpy(y).float()
+    X_tensor = torch.from_numpy(X_test).float()
+    y_tensor = torch.from_numpy(y_test).float()
 
     # Create dataset and dataloader
     dataset = data.TensorDataset(X_tensor, y_tensor)
@@ -78,8 +76,13 @@ def main(model_type):
             ground_truth.extend(y_batch.numpy())
 
     # Rescale predictions and ground truth
-    predictions_rescaled = scaler.inverse_transform(np.array(predictions).reshape(-1, output_size))
-    ground_truth_rescaled = scaler.inverse_transform(np.array(ground_truth).reshape(-1, output_size))
+    scaler = None  # You can load your scaler if necessary
+    # predictions_rescaled = scaler.inverse_transform(np.array(predictions).reshape(-1, output_size))
+    # ground_truth_rescaled = scaler.inverse_transform(np.array(ground_truth).reshape(-1, output_size))
+    
+    # For simplicity, we will assume no scaling is required
+    predictions_rescaled = np.array(predictions).reshape(-1, output_size)
+    ground_truth_rescaled = np.array(ground_truth).reshape(-1, output_size)
 
     # Calculate RMSE for each metric
     metric_names = ['CPU', 'Memory', 'Disk Write', 'Network Received']
