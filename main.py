@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torch.utils.data as data
 import matplotlib.pyplot as plt
-
+import time
 from data import load_data, scale_data, create_sequences
 
 from myLSTM import LSTMModel, train_lstm_model  # Import LSTM
@@ -21,7 +21,7 @@ from rmse import calculate_rmse
 
 
 # Hyperparameters
-model_type = 'GRU'  # Change this to 'LSTM', 'FFNN', or 'TCN'
+model_type = 'FFNN'  # Change this to 'LSTM', 'FFNN', or 'TCN'
 input_size = 4  
 hidden_size = 64
 num_layers = 2  # Only used for LSTM
@@ -146,19 +146,38 @@ with mlflow.start_run(run_name=f"{model_type} Model Run"):
 
     predictions = []
     ground_truth = []
+    total_prediction_time = 0
 
     # Predict for 100 random samples
     for idx in random_indices:
         with torch.no_grad():
             seq = X_test_tensor[idx].unsqueeze(0)
             
+            # Measure the prediction time for each sample
+            start_time = time.time()
+
             if model_type == 'FFNN':
                 seq = seq.view(seq.size(0), -1)  # Flatten input for FFNN
 
             pred = model(seq).detach().numpy()
+
+            # End timing and accumulate the time
+            end_time = time.time()
+            total_prediction_time += (end_time - start_time)
+
             predictions.append(pred[0])  # Append predicted values
             gt = y_test[idx]
             ground_truth.append(gt)
+
+
+    # Calculate the average prediction time per instance
+    avg_prediction_time = total_prediction_time / len(random_indices)
+    print(f'Average Prediction Time per Instance: {avg_prediction_time:.6f} seconds')
+
+    # Log the average prediction time to MLflow
+    mlflow.log_metric('avg_prediction_time_per_instance', avg_prediction_time)
+
+
 
     # Rescale the predictions and ground truth back to original scale
     predictions_rescaled = scaler.inverse_transform(np.array(predictions).reshape(-1, output_size))
