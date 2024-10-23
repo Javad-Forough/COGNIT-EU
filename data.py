@@ -14,7 +14,7 @@ def load_data(filename):
     data_reshaped = data.reshape(-1, 4)
     
     # Optionally, reduce the size for memory constraints
-    data_reshaped = data_reshaped[:len(data_reshaped) // 50]  # Use 1/4 of the dataset
+    data_reshaped = data_reshaped[:len(data_reshaped) // 50]  # Use 1/50 of the dataset
 
 
 
