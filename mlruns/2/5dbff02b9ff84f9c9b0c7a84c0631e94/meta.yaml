@@ -1,0 +1,15 @@
+artifact_uri: file:///home/jforough/Desktop/Cognit%20-%20Javad/COGNIT-EU/mlruns/2/5dbff02b9ff84f9c9b0c7a84c0631e94/artifacts
+end_time: 1730466218632
+entry_point_name: ''
+experiment_id: '2'
+lifecycle_stage: active
+name: ''
+run_id: 5dbff02b9ff84f9c9b0c7a84c0631e94
+run_uuid: 5dbff02b9ff84f9c9b0c7a84c0631e94
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1730466218576
+status: 4
+tags: []
+user_id: jforough

@@ -1,0 +1,4 @@
+artifact_location: file:///home/jforough/Desktop/Cognit%20-%20Javad/COGNIT-EU/mlruns/2
+experiment_id: '2'
+lifecycle_stage: active
+name: Univariate Model Comparison
